@@ -1,10 +1,15 @@
 package org.learning.spring.security.controller;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.learning.spring.security.entity.Student;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -50,4 +56,13 @@ public class StudentManagementController {
 		System.out.println(String.format("%s %s", studentId, student));
 	}
 
+	@GetMapping(value = "/csrf-token")
+	public @ResponseBody Map<String, String> getCsrfToken(HttpServletRequest request) {
+		CsrfToken token = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+		Map<String, String> result = new HashMap<>();
+		result.put("token", token.getToken());
+		result.put("parameterName", token.getParameterName());
+		result.put("headerName", token.getHeaderName());
+		return result;
+	}
 }
